@@ -1,1 +1,2 @@
-# Cody-Coursework
+# Cody Coursework Problems Repository
+## Boston University - EK127
