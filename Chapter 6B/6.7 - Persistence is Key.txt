@@ -1,0 +1,23 @@
+### Reference Solution ###
+
+function curr_sum = per2(n)
+persistent mysum
+if isempty(mysum)
+mysum = 0;
+end
+mysum = mysum + n;
+curr_sum = mysum;
+end
+
+### Hidden Tests ###
+
+%%
+for i = 1:3
+testsum = 0;
+for i = 1:5
+x = randi([1,10]);
+testsum = testsum +  x;
+assert(isequal(per2(x),testsum))
+end
+clear functions
+end
