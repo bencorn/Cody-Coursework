@@ -1,0 +1,41 @@
+### Reference Solution ###
+
+function data = stock_check(symbol)
+% Help: stock_check('AAPL') returns relevant stock data about Apple.
+
+% Markit Quote Endpoint
+endpoint = 'http://dev.markitondemand.com/MODApis/Api/v2/Quote/json';
+
+% Webread makes an HTTP GET request to Markit's Quote endpoint.
+% webread(endpoint, key, value)
+
+% The request parameter for this API call is just the symbol, these
+% are in the form of 'key-value' pairs. Here the key is 'symbol' and the value
+% is a stock symbol (i.e. AAPL).
+
+resp = webread(endpoint, 'symbol', symbol);
+
+% Run this code in MATLAB to determine the output of the API. It should
+% return a data structure you are familiar with. Using the data structure,
+% figure out how to extract the stock name, symbol, last price, change percent, and timestamp:
+
+data = {resp.Name, resp.Symbol, resp.LastPrice, resp.ChangePercent, resp.Timestamp};
+
+end
+
+### Hidden Tests ###
+
+%%
+
+goog_sign = 'GOOGL';
+goog = stock_check(goog_sign);
+
+% test that the output is a cell array
+assert(iscell(goog), 'Your function should return a cell array')
+assert(~isequal(goog{2}, 'GOOG'), 'There was an error in your cell array return.')
+assert(length(goog) == 5, 'Your function should output a cell array with 5 elements.')
+assert(ischar(goog{1}), 'The first element of your output should be the name of the stock, as a string.')
+assert(ischar(goog{2}), 'The second element of your output should be the stock symbol, as a string.')
+assert(isnumeric(goog{3}), 'The third element of your output should be the last stock price, as a double.')
+assert(isnumeric(goog{4}), 'The fourth element of your output should be the stock''s change in percentage, as a double.')
+assert(ischar(goog{5}), 'The fifth element of your output should be the timestamp, as a string.')
