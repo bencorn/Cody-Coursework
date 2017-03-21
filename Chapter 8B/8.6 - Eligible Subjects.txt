@@ -1,0 +1,75 @@
+### Reference Solution ###
+
+% create vector of structures on potential subjects for an
+% experiment, calculate average height and weight, and
+% determine and print eligible participants
+ 
+subjects(3) = struct('name','Mary','sub_id',363,'height',5.1,...
+'weight',110);
+subjects(1) = struct('name','Joey','sub_id',111,'height',6.7,...
+'weight',222.2);
+subjects(2) = struct('name','Pat','sub_id',221,'height',5.9,...
+'weight',165);
+ 
+%calculate the average height and weight
+avgheight = sum([subjects.height])/length(subjects);
+avgweight = sum([subjects.weight])/length(subjects);
+ 
+ 
+%find and print the eligible participants
+disp('Eligible Subjects:')
+nameArray = {};
+for i = 1:length(subjects)
+    if subjects(i).height < avgheight || subjects(i).weight < avgweight
+        fprintf('%s\n',subjects(i).name)
+        nameArray{end+1} = subjects(i).name;
+    end
+end
+
+
+### Hidden Tests ###
+
+%%
+%%
+% ¯\_(ツ)_/¯
+% Much creative, Carlton. ¯\_(ツ)_/¯
+
+
+
+run('solution')
+
+% check for variable existence. Do this for all named variables in the
+% problem description or variables provided in the initial_display
+
+vars = whos;
+
+is_subjects = any(strcmp('subjects',{vars.name}));
+assert(is_subjects,'Make sure you define a structure with the name "subjects".')
+
+is_avgheight = any(strcmp('avgheight',{vars.name}));
+assert(is_avgheight,'Make sure you define a variable with the name "avgheight".')
+
+is_avgweight = any(strcmp('avgweight',{vars.name}));
+assert(is_avgweight,'Make sure you define a variable with the name "avgweight".')
+
+is_nameArray = any(strcmp('nameArray',{vars.name}));
+assert(is_nameArray,'Make sure you define a variable with the name "nameArray".')
+
+% 3 subjects?
+assert(length(subjects) == 3, 'You should structure should have 3 different subjects')
+
+% calculating correct averages
+avgheight_test = sum([subjects.height])/length(subjects);
+avgweight_test = sum([subjects.weight])/length(subjects);
+
+% generating correct cell array for testing against
+nameArray_test = {};
+for i = 1:length(subjects)
+    if subjects(i).height < avgheight_test || subjects(i).weight < avgweight_test
+        nameArray_test{end+1} = subjects(i).name;
+    end
+end
+
+% checking user cell array, nameArray, to script generated cell array,  %nameArray_test.
+
+assert(isequal(nameArray, nameArray_test), 'There was an error in the content of your cell array. Make sure your cell array contains only the names of patients who weight or height is below the average.')
