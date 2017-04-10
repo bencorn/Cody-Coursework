@@ -1,0 +1,53 @@
+### Reference Solution ###
+
+% assign values for a and b:
+a = 40;
+b = 20;
+
+% write your subtraction operation here:
+x = minus(40,20);
+y = minus(20,40);
+
+
+## Hidden Tests ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_x = any(strcmp('x', {vars.name}));
+assert(is_x, 'Make sure you define a variable with the name "x"')
+is_y = any(strcmp('y', {vars.name}));
+assert(is_y, 'Make sure you define a variable with the name "y"')
+is_a = any(strcmp('a', {vars.name}));
+assert(is_x, 'Make sure you define a variable with the name "a"')
+is_b = any(strcmp('b', {vars.name}));
+assert(is_y, 'Make sure you define a variable with the name "b"')
+
+% check for the minus function
+code = fileread('solution.m');
+is_minus = strfind(code, 'minus(');
+if length(is_minus) == 1
+    suggestion = '';
+else
+    suggestion = 'Have you considered the minus() function?';
+end
+
+% check that their minus expression is correct
+% a - b
+minusA_correct = minus(a,b);
+assert(x == minusA_correct, ['Check the order of your function inputs. ', suggestion])
+
+% b - a
+minusB_correct = minus(b,a);
+assert(y == minusB_correct, ['Check the order of your function inputs. ', suggestion])
+
+% check for function usage
+func = strfind(code, 'minus(');
+assert(numel(func) >= 1, 'Make sure you use minus().');
+
+% check for assignment suppression
+num_suppressions = 4;
+scolons = strfind(code, ';');
+assert(numel(scolons) >= num_suppressions, 'Make sure to suppress your variable assignments. For example: a = 4;')
