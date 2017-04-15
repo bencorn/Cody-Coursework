@@ -1,0 +1,84 @@
+### REFERENCE SOLUTION ###
+
+% create a 3 by 6 matrix of random integers and write it to "randfile.dat"
+mat1 = randi([50,100],3,6);
+save randfile.dat mat1 -ascii
+  
+% append a 2 by 6 matrix of random integers to "randfile.dat"
+mat2 =   randi([50,100],2,6);
+save randfile.dat mat2 -ascii -append
+
+% load "randfile.dat" to check that it's right!
+load randfile.dat
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check that the student used the load() and save() functions
+code = fileread('solution.m');
+t = mtree(code);
+loadmatches = mtfind(t,'Kind','ID','String','load');
+assert(~isnull(loadmatches),'Your solution should use the load() function.')
+savematches = mtfind(t,'Kind','ID','String','save');
+assert(~isnull(savematches),'Your solution should use the save() function.')
+
+% check for variable existence
+vars = whos;
+  
+% check the matrices that the student will be saving
+is_mat1 = any(strcmp('mat1',{vars.name}));
+assert(is_mat1,'Make sure you define a variable with the name "mat1".')
+
+is_mat2 = any(strcmp('mat2',{vars.name}));
+assert(is_mat2,'Make sure you define a variable with the name "mat2".')
+  
+% check that the student loaded the matrix into the variable "randfile"
+randfileExists = any(strcmpi('randfile',{vars.name}));
+assert(randfileExists,'Make sure you load your final result into the variable "randfile".')
+  
+% check the contents of mat1 and mat2
+[rtest, ctest] = size(mat1);
+assert(rtest == 3,'Make sure mat1 has 3 rows.')
+assert(ctest == 6,'Make sure mat1 has 6 columns.')
+assert(all(all(gt(mat1,49))),'Make sure mat1 has values between 50 and 100.')
+assert(all(all(lt(mat1,101))),'Make sure mat1 has values between 50 and 100.')
+  
+[rtest, ctest] = size(mat2);
+assert(rtest == 2,'Make sure mat2 has 2 rows.')
+assert(ctest == 6,'Make sure mat2 has 6 columns.')
+assert(all(all(gt(mat2,49))),'Make sure mat2 has values between 50 and 100.')
+assert(all(all(lt(mat2,101))),'Make sure mat2 has values between 50 and 100.')
+  
+% define filename to check
+fnameToSearch = 'randfile.dat';
+  
+% check that the student used the correct filename
+filesInDir = ls;
+
+% windows and UNIX based machines handle ls differently
+if ispc
+  % PC handles the file list as a character matrix
+  [f_rows f_cols] = size(filesInDir);
+  filesInDir = [filesInDir, (blanks(f_rows)')]; % append leading white space to use as delimiter
+  filesToCheck = reshape(filesInDir,1,numel(filesInDir));
+  results = strfind(filesToCheck,fnameToSearch);
+else
+  % UNIX handles the file list as a string. So much smarter...
+  results = strfind(filesInDir,fnameToSearch);
+end
+  
+assert(~isempty(results),'Make sure you create a file with the name "randfile.dat".')
+  
+% check for the -ascii and -append qualifiers
+asciimatches = strfind(code,'-ascii');
+assert(~isempty(asciimatches),'You should use the -ascii qualifier every time you write to a file.')
+
+appendmatches = strfind(code,'-append');
+assert(~isempty(appendmatches),'You should use the -append qualifier to append to a file.')
+  
+% check the student's final result
+testmat = [mat1 ; mat2];
+testdata = load('randfile.dat');
+assert(isequal(testmat,testdata),'Your file contents are incorrect. Check that you append to the file correctly.')

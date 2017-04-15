@@ -1,0 +1,72 @@
+### REFERENCE SOLUTION ###
+
+% save valid data to "testtan.dat"
+mat = rand(2,3) * 4 - 1;
+save testtan.dat mat -ascii
+
+% load "testtan.dat" and store the tangent of every element in the matrix "mytangents":
+load testtan.dat
+mytangents = tan(testtan);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check that the student used the rand(), load(), and save() functions
+code = fileread('solution.m');
+t = mtree(code);
+loadmatches = mtfind(t,'Kind','ID','String','load');
+assert(~isnull(loadmatches),'Your solution should use the load() function.')
+savematches = mtfind(t,'Kind','ID','String','save');
+assert(~isnull(savematches),'Your solution should use the save() function.')
+randmatches = mtfind(t,'Kind','ID','String','rand');
+assert(~isnull(randmatches),'Make sure you are randomly generating your REAL numbers! What function can accomplish that task?')
+  
+% define filename to check
+fnameToSearch = 'testtan.dat';
+  
+% check that the student used the correct filename
+filesInDir = ls;
+
+% windows and UNIX based machines handle ls differently
+if ispc
+  % PC handles the file list as a character matrix
+  [f_rows f_cols] = size(filesInDir);
+  filesInDir = [filesInDir, (blanks(f_rows)')]; % append leading white space to use as delimiter
+  filesToCheck = reshape(filesInDir,1,numel(filesInDir));
+  results = strfind(filesToCheck,fnameToSearch);
+else
+  % UNIX handles the file list as a string. So much smarter...
+  results = strfind(filesInDir,fnameToSearch);
+end
+
+% check the dimensions of the matrix
+[myr,myc] = size(testtan);
+assert(and(isequal(myr,2),isequal(myc,3)),'Make sure your matrices are 2 by 3.')
+
+assert(~isempty(results),'Make sure you create a file with the name "testtan.dat".')
+  
+% check for the -ascii qualifier
+asciimatches = strfind(code,'-ascii');
+assert(~isempty(asciimatches),'You should use the -ascii qualifier every time you write to a file.')
+  
+% check for variable existence
+vars = whos;
+
+mytangentsExists = any(strcmpi('mytangents',{vars.name}));
+assert(mytangentsExists,'Make sure you define a variable with the name "mytangents".')
+  
+% check the file contents for valid values
+onthebeach = load('testtan.dat');
+
+assert(all(all(gt(onthebeach,-1.0001))),'You must use values between -1 and 3.')
+assert(all(all(lt(onthebeach,3.0001))),'You must use values between -1 and 3.')
+  
+% make sure they used real numbers, not integers
+inttest = int32(onthebeach);
+assert(~any(any(inttest == onthebeach)),'Your file must contain REAL numbers, not integers.')
+
+% check the final result
+sunburn = tan(onthebeach);
+assert(isequal(mytangents,sunburn),'Make sure you compute the tangent of every element in the matrix.')

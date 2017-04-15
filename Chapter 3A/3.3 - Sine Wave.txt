@@ -1,0 +1,70 @@
+### REFERENCE SOLUTION ###
+
+% create a plot using 10 points:
+x1 = linspace(0, pi, 10);
+plot(x1, sin(x1))
+  
+
+% create a plot (in a separate figure window) using 100 points:
+x2 = linspace(0,pi,100);
+figure(2)
+plot(x2,sin(x2))
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+  
+is_x1 = any(strcmpi('x1',{vars.name}));
+assert(is_x1,'Make sure you define a variable with the name "x1".')
+
+is_x2 = any(strcmpi('x2',{vars.name}));
+assert(is_x2,'Make sure you define a variable with the name "x2".')
+
+% check the values of x1 and x2:
+x1_test = linspace(0,pi,10);
+x1_test_alt = 0:pi/9:pi;
+x2_test = linspace(0,pi,100);
+x2_test_alt = 0:pi/99:pi;
+  
+assert(or(isequal(x1,x1_test),isequal(x1,x1_test_alt)),'Check your expression for x1. Make sure you have 10 points in the range 0 to pi.')
+assert(or(isequal(x2,x2_test),isequal(x2,x2_test_alt)),'Check your expression for x2. Make sure you have 100 points in the range 0 to pi.')
+  
+% check for two figure windows, NOTE: handles are a column vector in reverse order, hence the flipud
+fig_Handles = flipud(get(0,'Children'));
+assert(numel(fig_Handles) == 2,'Make sure you create two separate figure windows, one for each plot.')
+
+% check plot 1 (10 points)
+ah1 = get(fig_Handles(1),'CurrentAxes');
+plotobj1 = get(ah1,'Children');
+  
+try
+  x1_user = get(plotobj1,'XData');
+  assert(or(isequal(x1_user,x1_test),isequal(x1_user,x1_test_alt)),'Make sure you plot the correct x-values.')
+  y1_user = get(plotobj1,'YData');
+  y1_test = sin(x1_test);
+  y1_test_alt = sin(x1_test_alt);
+  assert(or(isequal(y1_user,y1_test),isequal(y1_user,y1_test_alt)),'Make sure you plot the correct y-values.')
+catch me
+  disp('There was an error grading plot 1.')
+  rethrow(me)
+end
+
+% check plot 2 (100 points)
+ah2 = get(fig_Handles(2),'CurrentAxes');
+plotobj2 = get(ah2,'Children');
+
+try
+  x2_user = get(plotobj2,'XData');
+  assert(or(isequal(x2_user,x2_test),isequal(x2_user,x2_test_alt)),'Make sure you plot the correct x-values.')
+  y2_user = get(plotobj2,'YData');
+  y2_test = sin(x2_test);
+  y2_test_alt = sin(x2_test_alt);
+  assert(or(isequal(y2_user,y2_test),isequal(y2_user,y2_test_alt)),'Make sure your plot the correct y-values.')
+catch me2
+  disp('There was an error grading plot 2.')
+  rethrow(me2)
+end

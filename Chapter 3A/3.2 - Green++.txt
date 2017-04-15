@@ -1,0 +1,93 @@
+### REFERENCE SOLUTION ###
+
+% create a 3 by 6 matrix of random integers and write it to "randfile.dat"
+mat1 = randi([50,100],3,6);
+save randfile.dat mat1 -ascii
+  
+% append a 2 by 6 matrix of random integers to "randfile.dat"
+mat2 =   randi([50,100],2,6);
+save randfile.dat mat2 -ascii -append
+
+% load "randfile.dat" to check that it's right!
+load randfile.dat
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+  
+is_x = any(strcmp('x',{vars.name}));
+assert(is_x,'Make sure you define a variable with the name "x".')
+
+is_y = any(strcmp('y',{vars.name}));
+assert(is_y,'Make sure you define a variable with the name "y".')
+
+% any values of x and y are fine, but must be numeric
+assert(isnumeric(x),'x must be a number.')
+assert(isnumeric(y),'y must be a number.')
+  
+% children of the root object '0' will be figure windows.
+% check for two figure windows, NOTE: handles are a column vector in reverse order, hence the flipud
+fig_Handles = flipud(get(0,'Children'));
+assert(numel(fig_Handles) == 1,'Make sure you only create one plot.')
+
+% check that title, xlabel, ylabel come after plot
+code = fileread('solution.m');
+plotpos = strfind(code,'plot(');
+titlepos = strfind(code,'title(');
+xlabelpos = strfind(code,'xlabel(');
+ylabelpos = strfind(code,'ylabel(');
+  
+assert(~isempty(plotpos),'You should use the plot() function to plot your point.')
+assert(~isempty(titlepos),'You should use the title() function to title your plot.')
+assert(~isempty(xlabelpos),'You should use the xlabel() function to label the x-axis.')
+assert(~isempty(ylabelpos),'You should use the ylabel() function to label the y-axis.')
+assert(all([lt(plotpos,titlepos), lt(plotpos,xlabelpos), lt(plotpos,ylabelpos)]),'You must plot your point BEFORE you title your plot or label your axes.')
+  
+% check plot 1
+ah = get(fig_Handles(1),'CurrentAxes');
+plotobj = get(ah,'Children');
+
+% each plot must be graded in a try-catch statement as you attempt to access plot data
+try
+  % check plot data
+  x_user = get(plotobj,'XData');
+  assert(length(x_user) == 1,'You must plot one (and ONLY one) (x,y) point... check your plot() function.')
+  assert(isequal(x_user,x),'Make sure you plot the x value you defined.')
+  y_user = get(plotobj,'YData'); 
+  assert(length(y_user) == 1,'You must plot one (and ONLY one) (x,y) point... check your plot() function.')
+  assert(isequal(y_user,y),'Make sure you plot the y value you defined.')
+  
+  % check plot properties
+  
+  % color
+  color = get(plotobj,'Color');
+  test = [1 0 1];
+  assert(all(~color == test),'You must plot a GREEN point.')
+
+  % marker
+  marker = get(plotobj,'Marker');
+  assert(strcmp(marker,'+'),'You must use a green plus sign to mark your point.')
+  
+  % xlabel
+  xlbl = get(ah,'Xlabel');
+  xstr = get(xlbl,'String');
+  assert(gt(length(xstr),0),'Make sure you label your x axis.')
+  
+  % ylabel
+  ylbl = get(ah,'Ylabel');
+  ystr = get(ylbl,'String');
+  assert(gt(length(ystr),0),'Make sure you label your y axis.')
+  
+  % title
+  tit = get(ah,'Title');
+  titstr = get(tit,'String');
+  assert(gt(length(titstr),0),'Make sure your plot has a title.')
+  
+catch me
+  disp('There was an error grading the plot.')
+  rethrow(me)
+end
