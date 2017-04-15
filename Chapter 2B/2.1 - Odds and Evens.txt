@@ -1,0 +1,47 @@
+### REFERENCE SOLUTION ###
+
+% generate a vector of random integers:
+vec = randi([50,100],1,20);
+  
+% store all of the even and odd numbers in the variables "evens" and "odds":
+evens = vec(mod(vec,2) == 0);
+odds = vec(mod(vec,2) == 1);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+
+is_vec = any(strcmp('vec',{vars.name}));
+assert(is_vec,'Make sure you define a variable with the name "vec".')
+
+is_evens = any(strcmp('evens',{vars.name}));
+assert(is_evens,'Make sure you define a variable with the name "evens".')
+
+is_odds = any(strcmp('odds',{vars.name}));
+assert(is_odds,'Make sure you define a variable with the name "odds".')
+
+% check vector for correct length and values
+l_test = 20;
+assert(isequal(length(vec),l_test),'Make sure your vector has exactly 20 elements.')
+assert(~any(gt(vec,100)),'Make sure your vector has values between 50 and 100.')
+assert(~any(lt(vec,50)),'Make sure your vector has values between 50 and 100.')
+
+% check expression for evens
+logv = mod(vec,2) == 0;
+evens_test = vec(logv);
+assert(isequal(evens,evens_test),'Check your expression for the variable "evens". How do you test if a number is even?')
+
+% check expression for odds
+odds_test = vec(~logv);
+assert(isequal(odds,odds_test),'Check your expression for the variable "odds". How do you test if a number is odd?')
+
+% make sure they randomly generated vec using randi (or rand with rounding? just check for a random fn)
+code = fileread('solution.m');
+t = mtree(code);
+matchesrandi = mtfind(t,'Kind','ID','String','randi');
+matchesrand = mtfind(t,'Kind','ID','String','rand');
+assert(or(~isnull(matchesrandi), ~isnull(matchesrand)),'Make sure to generate "vec" using one of the random number functions.')

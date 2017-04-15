@@ -1,0 +1,47 @@
+### REFERENCE SOLUTION ###
+
+% define the numerator and the denominator:
+num =3:2:9;
+denom = 1:4;
+  
+% calculate the sum:
+mysum = sum(num ./ denom);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+
+is_num = any(strcmp('num',{vars.name}));
+assert(is_num,'Make sure you define a variable with the name "num".')
+
+is_denom = any(strcmp('denom',{vars.name}));
+assert(is_denom,'Make sure you define a variable with the name "denom".')
+
+is_mysum = any(strcmp('mysum',{vars.name}));
+assert(is_mysum,'Make sure you define a variable with the name "mysum".')
+
+% check for correct num,denom,sum expressions
+num_test = 3:2:9;
+denom_test = 1:4;
+mysum_test = sum(num_test ./ denom_test);
+mysum_test2 = sum(num .* denom.^-1);
+  
+% enforce use of the ./ (or .\) operator
+code = fileread('solution.m');
+normaldivide = strfind(code,'/');
+normaldivideinto = strfind(code,'\');
+dotdivide = strfind(code,'./');
+dotdivideinto = strfind(code,'.\');
+dotinverse = strfind(code,'.^-1');
+  
+assert(any([~isempty(dotdivide),~isempty(dotdivideinto),~isempty(dotinverse)]),'Your solution must use the DOT operator.')
+assert(lt(length(normaldivide),2),'You solution must use division EFFICIENTLY (not more than once).')
+assert(lt(length(normaldivideinto),2),'You solution must use division EFFICIENTLY (not more than once).')
+  
+assert(isequal(num,num_test),'Check your expression for the numerator.')
+assert(isequal(denom,denom_test),'Check your expression for the denominator.')
+assert(any([isequal(mysum,mysum_test),isequal(mysum,mysum_test2)]),'Check your expression for the sum.')

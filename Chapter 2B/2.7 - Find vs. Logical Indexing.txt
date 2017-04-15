@@ -1,0 +1,47 @@
+### REFERENCE SOLUTION ###
+
+%vec is initialized here, don't change it:
+vec = randi([-5 5], 1, 10);
+
+%now assign the positive values of vec into posvec without using the find function:
+posvec = vec(vec>0);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution');
+
+% check for variable existence. Do this for all named variables in the
+% problem description or variables provided in the initial_display
+vars = whos;
+
+is_vec = any(strcmp('vec',{vars.name}));
+assert(is_vec,'Make sure you define a variable with the name "vec" Do not change the initial line we provided!')
+
+is_posvec = any(strcmp('posvec',{vars.name}));
+assert(is_posvec,'Make sure you define a variable with the name "posvec".')
+
+% Check that vec is a vector
+[r c] = size(vec);
+assert(isequal(c,length(vec)),'Make sure vec is a row vector.')
+
+% Make sure vec is generated randomly; aka enforce the randi function or the rand function
+code = fileread('solution.m');
+t = mtree(code);
+matchesrandi = mtfind(t,'Kind','ID','String','randi');
+matchesrand = mtfind(t,'Kind','ID','String','rand');
+assert(~isnull(matchesrandi),'Make sure to generate "vec" using randi.')
+
+% Check if posvec is correct
+trueposvec = vec(vec>0);
+assert(isequal(trueposvec,posvec),'Make sure posvec contains only the positive values from vec.')
+
+% check to make sure student is not using find
+matches = mtfind(t,'Kind','ID','String','find');
+assert(isnull(matches),'Solution should NOT use the find function. Use logical indexing instead.')
+
+% check for assignment suppression
+num_suppressions = 2;
+code = fileread('solution.m');
+scolons = strfind(code, ';');
+assert(numel(scolons) >= num_suppressions, 'Make sure to suppress your variable assignments. For example: r = 4;')

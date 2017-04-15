@@ -1,0 +1,77 @@
+### REFERENCE SOLUTION ###
+
+% Generating a random vector "vec":
+vec = randi([-5,5],1,10);
+
+% Perform the action of the diff function without using it:
+mydiff = vec(2:end) - vec(1:end-1);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution');
+
+% check for variable existence. Do this for all named variables in the
+% problem description or variables provided in the initial_display
+vars = whos;
+
+is_vec = any(strcmp('vec',{vars.name}));
+assert(is_vec,'Make sure you define a variable with the name "vec".')
+
+is_mydiff = any(strcmp('mydiff',{vars.name}));
+assert(is_mydiff,'Make sure you define a variable with the name "mydiff".')
+
+% Check that vec is a vector
+[r c] = size(vec);
+assert(isequal(c,length(vec)),'Make sure vec is a row vector.')
+
+% Make sure vec is generated randomly; aka enforce the randi function or the rand function
+code = fileread('solution.m');
+t = mtree(code);
+matchesrandi = mtfind(t,'Kind','ID','String','randi');
+matchesrand = mtfind(t,'Kind','ID','String','rand');
+assert(~isnull(matchesrandi) || ~isnull(matchesrand),'Make sure to generate "vec" using one of the random number functions.')
+
+% Check mydiff's dimensions; it should be 1 less element than vec
+assert(isequal(length(mydiff),length(vec)-1),'Make sure mydiff has the correct number of elements.')
+
+% check if mydiff is correct!
+assert(isequal(diff(vec),mydiff),'Check your expression for mydiff.')
+
+% check if end, length, or numel are used
+assert(FnFind('end') || FnFind('length') || FnFind('numel'), 'Try making your code more general when implementing your own diff function.');
+
+% check to make sure student is not using diff
+%unnecessary line: code = fileread('sourceFile.m');
+%also unnecessary: t = mtree(code);
+matches = mtfind(t,'Kind','ID','String','diff');
+assert(isnull(matches),'Solution should NOT use the diff function.')
+
+% check to make sure they are using the subtraction operator
+fid = fopen('solution.m');
+if fid == -1
+  %do nothing
+else
+  i = 1;
+  while ~feof(fid)
+    aline = fgetl(fid);
+    if isempty(aline)
+    else
+    if strcmp(aline(1),'%')
+      %do nothing
+    else
+      yesorno(i) = any(strfind(aline,'-'));
+      i = i + 1;
+    end
+    end
+  end
+  isminus = any(yesorno);
+  assert(isminus,'For an efficient solution, make sure you use the subtraction operator. Do not hardcode the vector.')
+  fclose(fid);
+end
+
+function exists = FnFind(fn_name)
+    % returns true if function exists in student code
+    solution =  getcallinfo('solution.m');
+    exists = any(strcmp(fn_name,solution(1).calls.fcnCalls.names));
+end

@@ -1,0 +1,42 @@
+### REFERENCE SOLUTION ###
+
+% sample rainmat data:
+rainmat = randi([5,70],randi([2,6]),4);
+  
+% write your expression(s) here, assigning the final result
+%to the variable "district_no":
+tots = sum(rainmat');
+district_no = find(tots == max(tots));
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+
+is_rainmat = any(strcmp('rainmat',{vars.name}));
+assert(is_rainmat,'Make sure you define a variable with the name "rainmat".')
+
+is_dist_no = any(strcmp('district_no',{vars.name}));
+assert(is_dist_no,'Make sure you define a variable with the name "district_no".')
+
+% verify that rainmat was not modified
+[r c] = size(rainmat);
+assert(lt(r,7),'Please do not change the expression for rainmat.')
+assert(isequal(c,4),'Please do not change the expression for rainmat.')
+  
+% check for correct district number
+sums_test = sum(rainmat');
+district_test = find(max(sums_test) == sums_test);
+  
+% check if student used the transpose operator
+code = fileread('solution.m');
+found_transpose = strfind(code,'''');
+
+if found_transpose
+    assert(isequal(district_no,district_test),'Check your expression(s) for the district number. Remember to find one district number that has the greatest total rainfall over the 4-year period.')
+else
+    assert(isequal(district_no,district_test),'Check your expression(s) for the district number. Remember that built-in functions operate on matrices COLUMN-WISE.')
+end

@@ -1,0 +1,38 @@
+### REFERENCE SOLUTION ###
+
+% here are vectors r and h:
+r = [5.501  5.5  5.499 5.498 5.5 5.5 5.52 5.51 5.5 5.48];
+h = [11.11 11.1 11.1 11.12 11.09 11.11 11.11 11.1 11.08 11.11];
+  
+% calculate vol:
+vol = pi * r .^2 .* h;
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence. Do this for all named variables in the
+% problem description or variables provided in the initial_display
+vars = whos;
+
+is_r = any(strcmp('r',{vars.name}));
+assert(is_r,'Make sure you define a variable with the name "r".')
+is_h = any(strcmp('h',{vars.name}));
+assert(is_h,'Make sure you define a variable with the name "h".')
+is_vol = any(strcmp('vol',{vars.name}));
+assert(is_vol,'Make sure you define a variable with the name "vol".')
+
+
+% check expressions for r and h (each needs 10 elements):
+assert(isequal(length(r),10),'Make sure "r" has 10 values.');
+assert(isequal(length(h),10),'Make sure "h" has 10 values.');
+
+myr1 = r(and(r>0,h>0));
+myh1 = h(and(r>0,h>0));
+
+truevol = pi*myr1.^2.*myh1;
+tolerance = 0.000001;
+ 
+assert(numel(vol) > 1, 'Make sure you are using element-wise multiplication instead of matrix multiplication.')
+assert(all((abs(vol - truevol) < tolerance)),'Check your expression for vol.')

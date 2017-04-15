@@ -1,0 +1,34 @@
+### REFERENCE SOLUTION ###
+
+% Create a 4x2 matrix of zeros:
+mat = zeros(4,2);
+  
+% Replace the second row with a 3 and a 6:
+mat(2,:) = [3 6];
+
+### HIDDEN TESTS ###
+
+%%
+run('solution');
+
+% check for variable existence. Do this for all named variables in the
+% problem description or variables provided in the initial_display
+vars = whos;
+
+is_mat = any(strcmp('mat',{vars.name}));
+assert(is_mat,'Make sure you define a variable with the name "mat".')
+
+% Check dimensions of mat
+[r c] = size(mat);
+assert(and(isequal(r,4),isequal(c,2)),'Make sure your matrix has 4 rows and 2 columns.')
+
+%Check value of mat
+truemat = zeros(4,2);
+truemat(2,:) = [3 6];
+assert(isequal(mat,truemat),'Check your expression for "mat".')
+
+% make sure they create mat efficiently, aka they use the zeros function
+code = fileread('solution.m');
+t = mtree(code);
+matches = mtfind(t,'Kind','ID','String','zeros');
+assert(~isnull(matches),'Make sure you preallocate "mat" efficiently by using the zeros function, then fill in the 3 and 6.')

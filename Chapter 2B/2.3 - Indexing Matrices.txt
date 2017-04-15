@@ -1,0 +1,53 @@
+### REFERENCE SOLUTION ###
+
+% generate mat efficiently:
+mat = [7:10; 12:-2:6];
+
+% index mat to obtain the elements listed above:
+element = mat(1,3);
+secondrow = mat(2,:);
+first2cols = mat(:,1:2);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_element = any(strcmp('element', {vars.name}));
+assert(is_element, 'Make sure you define a variable with the name "element"')
+is_secondrow = any(strcmp('secondrow', {vars.name}));
+assert(is_secondrow, 'Make sure you define a variable with the name "secondrow"')
+is_first2cols = any(strcmp('first2cols', {vars.name}));
+assert(is_first2cols, 'Make sure you define a variable with the name "first2cols"')
+
+% check for correct results
+mat_test = [7 8 9 10; 12 10 8 6];
+element_test = mat_test(1,3);
+secondrow_test = mat_test(2,:);
+first2cols_test = mat_test(:,1:2);
+
+assert(isequal(mat,mat_test),'Check your expression for "mat". Make sure it is the matrix described in the problem statement.')
+assert(isequal(element,element_test),'Check your expression for the element in the first row, third column.')
+assert(isequal(secondrow,secondrow_test),'Check your expression for the second row of mat.')
+assert(isequal(first2cols,first2cols_test),'Check your expression for the first 2 columns of mat.')
+
+% check for efficiency; so check to make sure they use the colon operator to create mat
+fid = fopen('solution.m');
+if fid == -1
+  %do nothing
+else
+  for i = 1:3 %because mat should be constructed in the 
+    aline = fgetl(fid);
+    if ~isempty(aline)
+        if ~strcmp(aline(1),'%')
+          yesorno(i) = any(strfind(aline,':'));
+          i = i + 1;
+        end
+    end
+  end
+  iscolon = any(yesorno);
+  assert(iscolon,'For an efficient solution, make sure you use the colon operator. Do not hardcode the vector.')
+  fclose(fid);
+end
