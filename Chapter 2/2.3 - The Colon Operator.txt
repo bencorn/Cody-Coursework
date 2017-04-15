@@ -1,0 +1,45 @@
+### REFERENCE SOLUTION ###
+
+% Write your answer here:
+myvec = [-1:0.5:1]';
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_myvec = any(strcmp('myvec', {vars.name}));
+assert(is_myvec, 'Make sure you define a variable with the name "myvec"')
+  
+% check that the student made a column vector, not a row vector
+[r c] = size(myvec);
+assert(isequal(c,1),'Please make sure that "myvec" is a column vector. Also note that the expression: 2:2:4'' is only transposing the 4, not the entire vector.')
+  
+% check that the student made the column vector correctly
+assert(isequal(myvec,[-1:.5:1]'),'Please make sure your vector is going from -1 to 1 in steps of .5.')
+
+% check that the student used the colon operator and didn't hardcode the vector
+i = 1;
+fid = fopen('solution.m');
+if fid == -1
+  %do nothing
+  assert(0, 'Could not find your solution. Please resubmit.')
+else
+    while ~feof(fid)
+        aline = fgetl(fid);
+        if isempty(aline)
+        else
+            if strcmp(aline(1),'%')
+              %do nothing
+            else
+              yesorno(i) = any(strfind(aline,':'));
+              i = i + 1;
+            end
+        end
+    end
+    iscolon = any(yesorno);
+    assert(iscolon,'Make sure you use the colon operator, do not hardcode the vector!')
+    fclose(fid);
+end

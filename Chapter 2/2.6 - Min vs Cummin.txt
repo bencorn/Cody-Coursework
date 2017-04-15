@@ -1,0 +1,52 @@
+### REFERENCE SOLUTION ###
+
+% create 5 x 10 matrix of logarithmic values from 10^1 to 10^pi.
+mat = reshape(logspace(1,pi), 5, 10);
+
+% find the minimum and cumulative minimum of mat
+min_result = min(mat);
+
+cummin_result = cummin(mat);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_mat = any(strcmp('mat', {vars.name}));
+assert(is_mat, 'Make sure you define a variable with the name "mat"')
+is_min_result = any(strcmp('min_result', {vars.name}));
+assert(is_min_result, 'Make sure you define a variable with the name "min_result"')
+is_cummin_result = any(strcmp('cummin_result', {vars.name}));
+assert(is_cummin_result, 'Make sure you define a variable with the name "cummin_result"')
+
+% check for the logspace function
+code = fileread('solution.m');
+is_logspace = strfind(code, 'logspace(');
+assert(numel(is_logspace) >= 1, 'Make sure you are using logspace with the correct inputs.');
+
+% check the matrix for correctness
+mat_correct = reshape(logspace(1,pi), 5, 10);
+assert(isequal(mat, mat_correct), 'Check the order of your function inputs. ');
+
+% check for min correctness
+min_correct = min(mat_correct);
+assert(isequal(min_result,min_correct), 'Your minimum result is wrong. Please check your expression.');
+
+% check for cummin correctness
+cummin_correct = cummin(mat_correct);
+assert(isequal(cummin_correct, cummin_result), 'Your minimum result is wrong. Please check your expression.');
+
+% check for function usage
+is_min_result = strfind(code, 'min(');
+assert(numel(is_min_result) >= 1, 'Make sure you use min().');
+
+is_cummin_result = strfind(code, 'cummin(');
+assert(numel(is_cummin_result) >= 1, 'Make sure you use cummin().');
+
+% check for assignment suppression
+num_suppressions = 3;
+scolons = strfind(code, ';');
+assert(numel(scolons) >= num_suppressions, 'Make sure to suppress your variable assignments. For example: a = 4;')

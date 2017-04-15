@@ -1,0 +1,24 @@
+### REFERENCE SOLUTION ###
+
+% write your answer here: 
+x = linspace(-pi,pi,20);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_x = any(strcmp('x', {vars.name}));
+assert(is_x, 'Make sure you define a variable with the name "x"')
+
+% check for correct x expression
+x_correct = linspace(-pi,pi,20);
+x_correct2 = -pi:2*pi/19:pi;
+
+% check that the user used the built-in pi constant
+assert(isequal(x(1),-pi),'Can you use a more accurate value for pi?')
+
+% check that the final result is correct
+assert(or(isequal(x,x_correct),isequal(x,x_correct2)),'Check your expression for x. What built-in function can be used to create equally spaced points?')

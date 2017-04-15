@@ -1,0 +1,49 @@
+### REFERENCE SOLUTION ###
+
+% Create vector 'v'
+v = [1:5];
+
+% Sum of vector
+x = sum(v);
+
+% Cumulative sum of vector
+y = cumsum(v);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_v = any(strcmp('v', {vars.name}));
+assert(is_v, 'Make sure you define a variable with the name "v"')
+
+is_x = any(strcmp('x', {vars.name}));
+assert(is_x, 'Make sure you define a variable with the name "x"')
+
+is_y = any(strcmp('y', {vars.name}));
+assert(is_y, 'Make sure you define a variable with the name "y"')
+  
+% check that the student made a row vector, not a column vector
+[r c] = size(v);
+assert(isequal(r,1),'Please make sure that "v" is a row vector.')
+
+% check for correct results of sum and cumsum
+sum_v = sum(v);
+cumsum_v = cumsum(v);
+
+assert(isequal(x, sum_v), 'Please make sure you assigned the correct result of sum() to x.');
+assert(isequal(y, cumsum_v), 'Please make sure you assigned the correct result of cumsum() to y.');
+
+code = fileread('solution.m');
+
+% check for function usage
+ssum = strfind(code, 'sum(');
+scumsum = strfind(code, 'cumsum(');
+assert(numel(ssum) >= 1, 'Make sure you use sum() and assign the result to x.');
+
+% check for assignment suppression
+scolons = strfind(code, ';');
+assert(numel(scumsum) >= 1, 'Make sure you use cumsum() and assign the result to x.');
+assert(numel(scolons) >= 3, 'Make sure to suppress your variable assignments. For example: a = 90;');

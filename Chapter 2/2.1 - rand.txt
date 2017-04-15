@@ -1,0 +1,32 @@
+### REFERENCE SOLUTION ###
+
+% generate a 4x5 matrix with  real numbers between 5 and 10
+mat = rand(4,5) * 5 + 5;
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_mat = any(strcmp('mat', {vars.name}));
+assert(is_mat, 'Make sure you define a variable with the name "mat"')
+
+% check for the correct dimensions
+[foo, bar] = size(mat);
+assert(foo == 4, 'Your matrix should be 4x5. Make sure your matrix has 4 rows.')
+assert(bar == 5, 'Your matrix should be 4x5. Make sure your matrix has 5 columns.')
+
+% check for real numbers
+intmat = round(mat);
+assert(all(all(intmat ~= mat)), 'Your matrix should contain REAL numbers (not integers).')
+
+% check for the correct range
+assert(all(all(mat > 5)), 'Your matrix contains one or more real numbers less than 5. Your matrix should contain only real numbers between 5 and 10.')
+assert(all(all(mat < 10)), 'Your matrix contains one or more real numbers greater than 10. Your matrix should contain only real numbers between 5 and 10.')
+
+% check for assignment suppression
+code = fileread('solution.m');
+scolons = strfind(code, ';');
+assert(numel(scolons) >= 1, 'Make sure to suppress your variable assignment with a semicolon. For example: mat = 4;')

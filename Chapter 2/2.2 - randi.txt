@@ -1,0 +1,53 @@
+### REFERENCE SOLUTION ###
+
+% assign a positive integer value to x
+x = 100;
+% generate a random integer between 1 and x
+scalar = randi(x);
+% generate a 2x3 matrix of random integers between -4 and 6
+mat = randi([-4,6],2,3);
+
+### HIDDEN TESTS ###
+
+%%
+run('solution')
+
+% check for variable existence
+vars = whos;
+is_mat = any(strcmp('mat', {vars.name}));
+assert(is_mat, 'Make sure you define a variable with the name "mat"')
+is_x = any(strcmp('x', {vars.name}));
+assert(is_x, 'Make sure you define a variable with the name "x"')
+is_scalar = any(strcmp('scalar', {vars.name}));
+assert(is_scalar, 'Make sure you define a variable with the name "scalar"')
+
+% check for correct size/value/range
+[r, c] = size(x);
+assert(and(r==1,c==1),'Make sure "x" is a scalar value.')
+assert(floor(x)==x,'Make sure x is an integer.')
+[r, c] = size(scalar);
+assert(and(r==1,c==1),'Make sure "scalar" is a scalar value.')
+assert(scalar>=1,'Make sure "scalar" is greater than or equal to 1.');
+assert(scalar<=x,'Make sure "scalar" is less than or equal to x.');
+
+[foo, bar] = size(mat);
+assert(foo == 2, 'Your matrix should be 2x3. Make sure your matrix has 2 rows.')
+assert(bar == 3, 'Your matrix should be 2x3. Make sure your matrix has 3 columns.')
+
+% check for integers in mat
+intmat = round(mat);
+assert(all(all(intmat == mat)), 'Your matrix should contain all INTEGERS.')
+
+% check for the correct range in mat
+assert(all(all(mat >= -4)), 'Your matrix contains one or more integers less than -4. Your matrix should contain only integers between -4 and 6.')
+assert(all(all(mat <= 6)), 'Your matrix contains one or more integers greater than 6. Your matrix should contain only integers between -4 and 6.')
+
+%make sure randi is used
+code = fileread('solution.m');
+t = mtree(code);
+matchesrandi = mtfind(t,'Kind','ID','String','randi');
+assert(count(matchesrandi)==2,'Make sure to use randi twice; once for "scalar" and once for "mat".')
+
+% check for assignment suppression
+scolons = strfind(code, ';');
+assert(numel(scolons) >= 3, 'Make sure to suppress all your variable assignments with a semicolon. For example: a = 4;')
