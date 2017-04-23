@@ -1,0 +1,65 @@
+%Attempt at making something by Grace lol maybe we can make this a nice simple cody for OOP?
+
+%Create a class 'Date' that has three properties: Month (a string), Day and
+%Year (positive integers). Overload the disp to print the date in the
+%format as follows:
+ 
+%today=Date('April',20,2017)
+%The date is April 20, 2017.
+ 
+
+
+%Create your Date class below!
+
+%Reference Solution
+
+classdef Date
+    properties
+        Month
+        Day
+        Year
+    end
+    methods
+        function obj = Date(month, day, year)
+            obj.Month = month;
+            obj.Day = day;
+            obj.Year = year;
+        end
+        function disp(obj)
+            fprintf('The date is %s %d, %d.\n',obj.Month, obj.Day, obj.Year)
+        end
+    end
+end
+ 
+
+%Hidden Tests
+
+code=fileread('Date.m');
+
+%Check for the property definitions 
+assert(length(strfind(code,'Month')) >= 1,'Month property is not defined.');
+assert(length(strfind(code,'Day')) >= 1,'Day property is not defined.');
+assert(length(strfind(code,'Year')) >= 1,'Year property is not defined.');
+
+%Check for use of fprintf
+assessFunctionPresence('fprintf','Feedback','You should use fprintf when you overload the disp function to format your output.', 'FileName','Date.m');
+
+%Instantiating object
+test = [];
+
+try
+    test=Date('April',20,2017); 
+catch err
+    assert(false, 'Your constructor function failed. Ensure your constructor takes three inputs as specified.');
+end
+
+%Check constructor
+assert(isequal(test.Month, 'April'), 'You did not properly write the Date constructor. Are you using the dot operator?');
+assert(isequal(test.Day, 20), 'You did not properly write the Date constructor. Are you using the dot operator?');
+assert(isequal(test.Year, 2017), 'You did not properly write the Date constructor. Are you using the dot operator?');
+
+%Check the format of fprintf. Check it up until %here to see if the general format %matches. Not including the variables, in case %they use a different object output %name.
+
+checkfprintf=strfind(code, 'fprintf(''The date is %s %d, %d.\n');
+assert(~isempty(checkfprintf), 'Something is wrong with the format of your disp. Check that your print statement exactly matches out example and try again.')
+
